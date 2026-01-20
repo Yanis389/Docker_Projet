@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Exo2 CRUD Users</title>
+</head>
+<body>
+    <h1>Gestion des utilisateurs</h1>
+
+    <h2>Créer un utilisateur</h2>
+    <input id="username" placeholder="username">
+    <input id="password" placeholder="password" type="password">
+    <button onclick="createUser()">Créer</button>
+
+    <h2>Liste des utilisateurs</h2>
+    <ul id="userList"></ul>
+
+<script>
+const API = "/api/users";
+
+function refreshUsers() {
+    fetch(API)
+        .then(res => res.json())
+        .then(users => {
+            const ul = document.getElementById("userList");
+            ul.innerHTML = "";
+            users.forEach(u => {
+                const li = document.createElement("li");
+                li.innerHTML = `#${u.id} - ${u.username} - ${u.password} 
+                    <button onclick="deleteUser(${u.id})">Supprimer</button>
+                    <button onclick="updateUserPrompt(${u.id}, '${u.username}', '${u.password}')">Modifier</button>`;
+                ul.appendChild(li);
+            });
+        });
+}
+
+function createUser() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    fetch(API, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({username, password})
+    }).then(refreshUsers);
+}
+
+function deleteUser(id) {
+    fetch(`${API}/${id}`, { method: "DELETE" }).then(refreshUsers);
+}
+
+function updateUserPrompt(id, oldUsername, oldPassword) {
+    const username = prompt("Nouveau username", oldUsername);
+    const password = prompt("Nouveau password", oldPassword);
+    if (username && password) {
+        fetch(`${API}/${id}`, {
+            method: "PUT",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({username, password})
+        }).then(refreshUsers);
+    }
+}
+
+refreshUsers();
+</script>
+</body>
+</html>

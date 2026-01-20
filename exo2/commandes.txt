@@ -1,0 +1,18 @@
+curl http://localhost:5001/api/users
+
+//Création user
+
+curl -X POST http://localhost:5001/api/users \
+-H "Content-Type: application/json" \
+-d '{"username":"yanis","password":"1234"}'
+
+// MAJ user
+
+curl -X PUT http://localhost:5001/api/users/1 \
+-H "Content-Type: application/json" \
+-d '{"username":"yanis2","password":"abcd"}'
+
+
+// Suppr user
+
+curl -X DELETE http://localhost:5001/api/users/1
