@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Frontend Docker</title>
+</head>
+<body>
+    <h1>Message du backend :</h1>
+    <p id="message">Chargement...</p>
+
+<script>
+    fetch("/api/hello")
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("message").innerText = data.message;
+        })
+        .catch(() => {
+            document.getElementById("message").innerText = "Erreur backend";
+        });
+</script>
+</body>
+</html>

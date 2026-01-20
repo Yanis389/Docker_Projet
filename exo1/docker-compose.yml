@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    container_name: exo1_backend
+    ports:
+      - "5001:5000"
+
+  frontend:
+    build: ./frontend
+    container_name: exo1_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
