@@ -1,0 +1,25 @@
+services:
+  tor:
+    image: dperson/torproxy
+    container_name: tor
+    restart: unless-stopped
+    ports:
+      - "9050:9050" # SOCKS5
+      - "9051:9051" # Control port
+
+  backend:
+    build: ./backend
+    container_name: exo3-backend
+    ports:
+      - "5001:5001"
+    depends_on:
+      - tor
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: exo3-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend

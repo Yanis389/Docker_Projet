@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Exercice 3 - Tor Users</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .user {
+      background: white;
+      padding: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+    img {
+      border-radius: 50%;
+      margin-right: 15px;
+    }
+    .error {
+      color: red;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Utilisateurs via Tor</h1>
+<button onclick="loadUsers()">Charger les utilisateurs</button>
+
+<div id="users"></div>
+<div id="error" class="error"></div>
+
+<script>
+async function loadUsers() {
+  const container = document.getElementById("users");
+  const errorDiv = document.getElementById("error");
+  container.innerHTML = "";
+  errorDiv.innerHTML = "";
+
+  try {
+    const res = await fetch("http://localhost:5001/api/users");
+    if (!res.ok) throw new Error("Erreur HTTP " + res.status);
+
+    const data = await res.json();
+    data.forEach(u => {
+      container.innerHTML += `
+        <div class="user">
+          <img src="${u.picture}" />
+          <strong>${u.name}</strong>
+        </div>
+      `;
+    });
+
+  } catch (err) {
+    errorDiv.innerText = "Erreur : " + err;
+    console.error(err);
+  }
+}
+
+window.onload = loadUsers;
+</script>
+
+</body>
+</html>
