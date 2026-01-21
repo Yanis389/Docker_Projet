@@ -1,25 +1,40 @@
+networks:
+  app-network:
+    driver: bridge
+
 services:
   tor:
     image: dperson/torproxy
     container_name: tor
     restart: unless-stopped
     ports:
-      - "9050:9050" # SOCKS5
-      - "9051:9051" # Control port
+      - "9050:9050"
+      - "9051:9051"
+    networks:
+      - app-network
 
   backend:
     build: ./backend
     container_name: exo3-backend
+    env_file:
+      - ./backend/.env
     ports:
       - "5001:5001"
     depends_on:
       - tor
+    networks:
+      - app-network
     restart: unless-stopped
 
   frontend:
     build: ./frontend
     container_name: exo3-frontend
+    env_file:
+      - ./frontend/.env
     ports:
       - "80:80"
     depends_on:
       - backend
+    networks:
+      - app-network
+    restart: unless-stopped

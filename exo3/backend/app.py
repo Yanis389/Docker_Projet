@@ -1,13 +1,17 @@
 from flask import Flask, jsonify
 import requests
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  
 
 app = Flask(__name__)
 CORS(app)
 
 TOR_PROXY = {
-    "http": "socks5h://tor:9050",
-    "https": "socks5h://tor:9050"
+    "http": f"socks5h://{os.getenv('TOR_HOST')}:{os.getenv('TOR_PORT')}",
+    "https": f"socks5h://{os.getenv('TOR_HOST')}:{os.getenv('TOR_PORT')}"
 }
 
 @app.route("/api/users", methods=["GET"])
@@ -29,4 +33,5 @@ def get_users():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001)
+    port = int(os.getenv("BACKEND_PORT", 5001))
+    app.run(host="0.0.0.0", port=port)
